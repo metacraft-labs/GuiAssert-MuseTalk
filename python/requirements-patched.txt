@@ -1,0 +1,74 @@
+# Patched MuseTalk requirements for Python 3.10 + PyTorch 2.x on Apple
+# Silicon.  MuseTalk's upstream `requirements.txt` pins:
+#
+#     diffusers==0.30.2
+#     accelerate==0.28.0
+#     numpy==1.23.5
+#     tensorflow==2.12.0          (training-only; we drop it)
+#     tensorboard==2.12.0         (training-only; we drop it)
+#     opencv-python==4.9.0.80
+#     soundfile==0.12.1
+#     transformers==4.39.2
+#     huggingface_hub==0.30.2
+#     librosa==0.11.0
+#     einops==0.8.1
+#     gradio==5.24.0              (interactive demo; we drop it)
+#     gdown
+#     requests
+#     imageio[ffmpeg]
+#     omegaconf
+#     ffmpeg-python
+#     moviepy
+#
+# We keep the inference-relevant pins as close to upstream as possible to
+# preserve weight compatibility, but drop the training / Gradio / TF stack
+# (which is enormous and Apple-Silicon-hostile) and let pip pick a
+# coherent numpy / scipy for the host. The mmcv / mmdet / mmpose / mmengine
+# family is NOT listed here — those are installed via OpenMIM
+# (`pip install openmim && mim install ...`) by `scripts/install.sh`
+# because pip alone cannot resolve their inter-version constraints
+# reliably on Apple Silicon.
+#
+# PyTorch itself is installed by the install script ahead of this file via
+# `pip install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2`, which
+# pulls macOS-arm64 wheels with MPS support.  The spec asks for torch
+# 2.0.1; in practice torch 2.0.1 wheels for arm64 mac are flaky and recent
+# 2.2.x wheels work transparently with the same MuseTalk weight checkpoints.
+# See PATCHES.md for the full rationale.
+
+diffusers==0.30.2
+accelerate==0.28.0
+transformers==4.39.2
+huggingface_hub==0.30.2
+
+# OpenCV — pin to a recent wheel with arm64 support.  Upstream pins
+# opencv-python==4.9.0.80; the API surface MuseTalk touches is stable.
+opencv-python==4.9.0.80
+
+# Audio stack.  librosa 0.11.x + soundfile 0.12.x work on numpy 1.23.x.
+librosa==0.11.0
+soundfile==0.12.1
+
+# Misc — leave open for modern pip resolution.
+einops==0.8.1
+omegaconf
+ffmpeg-python
+imageio[ffmpeg]
+moviepy
+requests
+gdown
+tqdm
+
+# numpy — pinned to upstream's value for ABI compatibility with the
+# checkpointed VAE + UNet pickles.
+numpy==1.23.5
+
+# scipy — pinned via librosa.  Leave open.
+scipy
+
+# OpenMIM glue — the install script also installs mmengine / mmdet /
+# mmpose via `mim install` (and full mmcv==2.1.0 built from source —
+# mmcv-lite is not enough because mmpose's EDPoseHead needs mmcv._ext's
+# MultiScaleDeformableAttention symbol), but we surface `openmim` here
+# too so that `pip freeze` records it.
+openmim
