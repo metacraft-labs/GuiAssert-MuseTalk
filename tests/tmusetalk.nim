@@ -23,7 +23,7 @@
 ## When compiled with `-d:musetalkLive` we end-to-end render a real
 ## talking-head MP4:
 ##
-##   nim c -d:musetalkLive -r --hints:off --path:src --path:../GuiAssert/src \
+##   nim c -d:musetalkLive -r --hints:off --path:src --path:../DemoVideoStudio/src --path:../GuiAssert/src \
 ##       tests/tmusetalk.nim
 ##
 ## Requirements:
@@ -42,7 +42,7 @@
 
 import std/[options, os, unittest]
 
-import gui_assert/talking_head
+import demo_video_studio/plugins/talking_head
 import gui_assert_musetalk
 
 when defined(musetalkLive):
