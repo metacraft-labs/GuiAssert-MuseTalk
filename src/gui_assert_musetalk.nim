@@ -27,7 +27,7 @@
 
 import std/[options, os, osproc, streams, strformat, times]
 
-import gui_assert/talking_head
+import demo_video_studio/plugins/talking_head
 
 const
   ProviderName* = "musetalk"
@@ -206,7 +206,7 @@ proc registerMuseTalk*(r: TalkingHeadRegistry) =
   ## One-liner plugin entry point.  Callers do:
   ##
   ## ```nim
-  ## import gui_assert/talking_head
+  ## import demo_video_studio/plugins/talking_head
   ## import gui_assert_musetalk
   ##
   ## let reg = newRegistry()
